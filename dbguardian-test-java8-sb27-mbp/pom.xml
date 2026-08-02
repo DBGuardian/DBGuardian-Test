@@ -120,6 +120,13 @@
             <version>${dbguardian.version}</version>
         </dependency>
 
+        <!-- DBGuardian MySQL 方言 -->
+        <dependency>
+            <groupId>io.dbguardian</groupId>
+            <artifactId>dbguardian-dialect-mysql</artifactId>
+            <version>${dbguardian.version}</version>
+        </dependency>
+
         <!-- ═══════════════════════════════════════════════════════
              缓存/协调层
              ═══════════════════════════════════════════════════════ -->

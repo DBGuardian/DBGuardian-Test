@@ -82,6 +82,12 @@
         </dependency>
 
         <dependency>
+            <groupId>io.dbguardian</groupId>
+            <artifactId>dbguardian-dialect-mysql</artifactId>
+            <version>${dbguardian.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>

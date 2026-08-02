@@ -162,6 +162,39 @@ public class FailoverTest {
         assertContaminatedSlaveReplicatedBackToMaster(slaveDataSource);
     }
 
+    @Test
+    public void testSlaveReadFailsOverToMasterAndResumesAfterReplicationRecovery() throws SQLException {
+        DataSourceRegistry registry = new DataSourceRegistry();
+        ClusterRuntimeStateManager runtimeStateManager = new ClusterRuntimeStateManager();
+        runtimeStateManager.initialize("slave-read-failover-test", "master", "slave");
+
+        FailoverController failoverController = new FailoverController(registry, null);
+        failoverController.setCurrentMasterId("master");
+        failoverController.setRuntimeStateManager(runtimeStateManager);
+        failoverController.setReplicationUser("repl");
+        failoverController.setReplicationPassword("repl-pass");
+
+        ScriptedDataSource masterDataSource = ScriptedDataSource.masterNeedsCatchupFromSlave();
+        ScriptedDataSource slaveDataSource = ScriptedDataSource.slaveHealthyButReplicationBroken();
+        registry.registerMaster("master", wrapper("master", true, masterDataSource));
+        registry.registerSlave("slave", wrapper("slave", false, slaveDataSource));
+
+        failoverController.handleSlaveFailure("slave");
+
+        assertEquals("master", runtimeStateManager.resolveLookupKey(false, true), "从库不可用时读请求应降级到主库");
+        assertTrue(runtimeStateManager.current().isSlaveReadsBlocked(), "从库不可用时应阻断从读");
+
+        assertTrue(failoverController.recoverSlaveReplication("slave"), "从库恢复后应重建 MySQL 复制关系");
+        assertEquals("master", runtimeStateManager.resolveLookupKey(false, true), "START SLAVE 成功但未二次确认复制健康前，读请求必须继续走主库");
+        assertTrue(runtimeStateManager.current().isSlaveReadsBlocked(), "START SLAVE 成功但未二次确认复制健康前，应继续阻断从读");
+
+        failoverController.handleSlaveRecovery("slave");
+
+        assertEquals("slave", runtimeStateManager.resolveLookupKey(false, true), "复制恢复健康后读请求应回到从库");
+        assertFalse(runtimeStateManager.current().isSlaveReadsBlocked(), "复制恢复健康后应解除从读阻断");
+        assertPromotedSlaveReplicatingFromOriginalMaster(slaveDataSource);
+    }
+
     private static DataSourceWrapper wrapper(String id, boolean master, DataSource dataSource) {
         return new DataSourceWrapper(
                 id,

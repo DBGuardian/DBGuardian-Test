@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: dbguardian-test-java8-sb27-mbp-pg
+
+  # PostgreSQL 主库数据源配置（测试环境）
+  datasource:
+    master:
+      url: jdbc:postgresql://localhost:5432/dbguardian_master
+      username: postgres
+      password: postgres
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 5
+        minimum-idle: 1
+        connection-timeout: 10000
+        idle-timeout: 300000
+        max-lifetime: 600000
+    # PostgreSQL 从库数据源配置
+    slave:
+      url: jdbc:postgresql://localhost:5433/dbguardian_slave
+      username: postgres
+      password: postgres
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 5
+        minimum-idle: 1
+        connection-timeout: 10000
+        idle-timeout: 300000
+        max-lifetime: 600000
+    # PostgreSQL 复制观测配置
+    replication:
+      master-host: localhost
+      master-port: 5432
+      master-user: postgres
+      master-password: postgres
+      auto-reconnect: true
+    # 允许降级启动
+    allow-degraded-startup: true
+
+  # Redis配置（测试环境）
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 1
+    timeout: 5000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: 1000ms
+        max-idle: 2
+        min-idle: 1
+
+# MyBatis-Plus配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.dbguardian.test.entity
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.dbguardian.test: DEBUG
+    io.dbguardian: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n"
