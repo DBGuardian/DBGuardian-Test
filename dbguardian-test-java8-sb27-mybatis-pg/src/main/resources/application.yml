@@ -1,0 +1,127 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: dbguardian-test-java8-sb27-mybatis-pg
+
+  main:
+    allow-circular-references: true
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    serialization:
+      write-dates-as-timestamps: false
+
+  datasource:
+    master:
+      url: jdbc:postgresql://192.168.3.150:5432/appdb
+      username: appuser
+      password: zhuzhou9uu897@
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 2
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+    slave:
+      url: jdbc:postgresql://192.168.3.151:5432/appdb
+      username: appuser
+      password: zhuzhou9uu897@
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 2
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+    replication:
+      master-host: 192.168.3.150
+      master-port: 5432
+      master-user: repl
+      master-password: zhuzhou9uu897@
+      auto-reconnect: true
+    recovery:
+      enabled: true
+      auto-failback: true
+      catchup-timeout-seconds: 300
+      catchup-check-interval-seconds: 2
+      postgresql:
+        enabled: true
+        keep-promoted-primary: false
+        data-directory: /var/lib/postgresql/16/main
+        config-file: /etc/postgresql/16/main/postgresql.conf
+        script-path: /opt/dbguardian/scripts/pg-rewind-recover.sh
+        remote-execution-enabled: true
+        remote-executor-command: >
+          ssh ubuntu@192.168.3.150 "sudo -u postgres env {env_sh} bash {script_path_sh}"
+        remote-executor-password: "zhuzhou9uu897@"
+        pg-ctl-command: /usr/lib/postgresql/16/bin/pg_ctl
+        psql-command: /usr/lib/postgresql/16/bin/psql
+        pg-rewind-command: /usr/lib/postgresql/16/bin/pg_rewind
+        local-host: 127.0.0.1
+        local-port: 5432
+        local-database: appdb
+        primary-slot-name: appdb_slot
+        extra-primary-conn-info: "target_session_attrs=read-write"
+        startup-wait-seconds: 60
+        command-timeout-seconds: 900
+        failback-data-directory: /var/lib/postgresql/16/main
+        failback-config-file: /etc/postgresql/16/main/postgresql.conf
+        failback-script-path: /opt/dbguardian/scripts/pg-rewind-recover.sh
+        failback-remote-execution-enabled: true
+        failback-remote-executor-command: >
+          ssh ubuntu@192.168.3.151 "sudo -u postgres env {env_sh} bash {script_path_sh}"
+        failback-remote-executor-password: "zhuzhou9uu897@"
+        failback-pg-ctl-command: /usr/lib/postgresql/16/bin/pg_ctl
+        failback-psql-command: /usr/lib/postgresql/16/bin/psql
+        failback-pg-rewind-command: /usr/lib/postgresql/16/bin/pg_rewind
+        failback-local-host: 127.0.0.1
+        failback-local-port: 5432
+        failback-local-database: appdb
+        failback-primary-slot-name: appdb_slot
+        failback-extra-primary-conn-info: "target_session_attrs=read-write"
+        failback-command-timeout-seconds: 900
+    allow-degraded-startup: true
+
+  redis:
+    host: 192.168.3.150
+    port: 6379
+    password: zhuzhou9uu897@
+    database: 0
+    timeout: 10000ms
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: 3000ms
+        max-idle: 5
+        min-idle: 1
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: com.dbguardian.test.entity
+
+knife4j:
+  enable: true
+  openapi:
+    title: DBGuardian PostgreSQL MyBatis 测试项目 API 文档
+    description: 用于测试 PostgreSQL 读写分离功能
+    version: 1.0.0
+
+logging:
+  level:
+    root: INFO
+    com.dbguardian.test: DEBUG
+    io.dbguardian: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n"
