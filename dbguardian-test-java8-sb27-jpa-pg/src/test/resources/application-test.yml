@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    master:
+      url: jdbc:h2:mem:dbguardian;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
+    slave:
+      url: jdbc:h2:mem:dbguardian;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
+    runtime:
+      periodic-health-check-enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+  redis:
+    host: localhost
+    port: 6379
+
+logging:
+  level:
+    io.dbguardian: WARN

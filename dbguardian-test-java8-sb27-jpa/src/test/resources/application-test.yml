@@ -1,0 +1,25 @@
+spring:
+  profiles: test
+  
+  # H2 内存数据库配置（用于测试）
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  
+  # Redis - 测试禁用
+  redis:
+    host: localhost
+    port: 6379
+
+# DBGuardian - 测试降级模式（无真实数据库连接时）
+spring.datasource.allow-degraded-startup: true

@@ -1,0 +1,79 @@
+spring:
+  application:
+    name: dbguardian-test-java8-sb27-mybatis-pg
+
+  datasource:
+    master:
+      url: jdbc:postgresql://localhost:5432/dbguardian_master
+      username: postgres
+      password: postgres
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 5
+        minimum-idle: 1
+        connection-timeout: 10000
+        idle-timeout: 300000
+        max-lifetime: 600000
+    slave:
+      url: jdbc:postgresql://localhost:5433/dbguardian_slave
+      username: postgres
+      password: postgres
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 5
+        minimum-idle: 1
+        connection-timeout: 10000
+        idle-timeout: 300000
+        max-lifetime: 600000
+    replication:
+      master-host: localhost
+      master-port: 5432
+      master-user: postgres
+      master-password: postgres
+      auto-reconnect: true
+    recovery:
+      enabled: true
+      auto-failback: true
+      catchup-timeout-seconds: 30
+      catchup-check-interval-seconds: 1
+      postgresql:
+        enabled: true
+        data-directory: /var/lib/postgresql/data
+        remote-execution-enabled: false
+        pg-ctl-command: pg_ctl
+        psql-command: psql
+        pg-rewind-command: pg_rewind
+        local-host: localhost
+        local-port: 5432
+        local-database: dbguardian_master
+        primary-slot-name: dbguardian_slot
+        startup-wait-seconds: 10
+        command-timeout-seconds: 30
+    allow-degraded-startup: true
+
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 1
+    timeout: 5000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: 1000ms
+        max-idle: 2
+        min-idle: 1
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: com.dbguardian.test.entity
+
+logging:
+  level:
+    root: INFO
+    com.dbguardian.test: DEBUG
+    io.dbguardian: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n"
