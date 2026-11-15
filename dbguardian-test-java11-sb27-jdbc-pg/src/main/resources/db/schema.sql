@@ -1,0 +1,28 @@
+-- ===============================================
+-- DBGuardian PostgreSQL Spring JDBC 测试数据库初始化脚本
+-- 需要在主库执行，并确保数据复制到从库
+-- ===============================================
+
+CREATE TABLE IF NOT EXISTS t_user (
+    id BIGSERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone VARCHAR(20),
+    status SMALLINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uk_t_user_username UNIQUE (username)
+);
+
+CREATE TABLE IF NOT EXISTS t_order (
+    id BIGSERIAL PRIMARY KEY,
+    order_no VARCHAR(50) NOT NULL,
+    user_id BIGINT NOT NULL REFERENCES t_user(id),
+    amount NUMERIC(10, 2) NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uk_t_order_order_no UNIQUE (order_no)
+);
+
+CREATE INDEX IF NOT EXISTS idx_t_order_user_id ON t_order(user_id);
