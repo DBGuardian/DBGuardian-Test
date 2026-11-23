@@ -11,8 +11,8 @@ spring:
       password:
       driver-class-name: org.h2.Driver
     replication:
-      master-user:
-      master-password:
+      master-user: ${DBGUARDIAN_REPLICATION_USER:}
+      master-password: ${DBGUARDIAN_REPLICATION_PASSWORD:}
     runtime:
       periodic-health-check-enabled: false
     recovery:

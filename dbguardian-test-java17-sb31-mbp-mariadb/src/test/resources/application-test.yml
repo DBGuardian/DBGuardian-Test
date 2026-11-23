@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    master:
+      url: jdbc:h2:mem:mbp_mariadb_java17_sb31_master;MODE=MariaDB;DB_CLOSE_DELAY=-1
+      driver-class-name: org.h2.Driver
+      username: sa
+      password: ''
+    slave:
+      url: jdbc:h2:mem:mbp_mariadb_java17_sb31_slave;MODE=MariaDB;DB_CLOSE_DELAY=-1
+      driver-class-name: org.h2.Driver
+      username: sa
+      password: ''
+    runtime:
+      periodic-health-check-enabled: false
+    recovery:
+      enabled: false
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 1
+      password: ''
+      database: 0
+      connect-timeout: 100ms
+      timeout: 100ms

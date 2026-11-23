@@ -5,9 +5,9 @@ spring:
   # PostgreSQL 主库数据源配置（测试环境）
   datasource:
     master:
-      url: jdbc:postgresql://localhost:5432/dbguardian_master
-      username: postgres
-      password: postgres
+      url: ${DBGUARDIAN_DB_MASTER_URL:jdbc:postgresql://127.0.0.1:5432/dbguardian_master}
+      username: ${DBGUARDIAN_DB_MASTER_USERNAME:}
+      password: ${DBGUARDIAN_DB_MASTER_PASSWORD:}
       driver-class-name: org.postgresql.Driver
       hikari:
         maximum-pool-size: 5
@@ -17,9 +17,9 @@ spring:
         max-lifetime: 600000
     # PostgreSQL 从库数据源配置
     slave:
-      url: jdbc:postgresql://localhost:5433/dbguardian_slave
-      username: postgres
-      password: postgres
+      url: ${DBGUARDIAN_DB_SLAVE_URL:jdbc:postgresql://127.0.0.1:5433/dbguardian_slave}
+      username: ${DBGUARDIAN_DB_SLAVE_USERNAME:}
+      password: ${DBGUARDIAN_DB_SLAVE_PASSWORD:}
       driver-class-name: org.postgresql.Driver
       hikari:
         maximum-pool-size: 5
@@ -29,20 +29,20 @@ spring:
         max-lifetime: 600000
     # PostgreSQL 复制观测配置
     replication:
-      master-host: localhost
-      master-port: 5432
-      master-user: postgres
-      master-password: postgres
+      master-host: ${DBGUARDIAN_REPLICATION_HOST:127.0.0.1}
+      master-port: ${DBGUARDIAN_REPLICATION_PORT:5432}
+      master-user: ${DBGUARDIAN_REPLICATION_USER:}
+      master-password: ${DBGUARDIAN_REPLICATION_PASSWORD:}
       auto-reconnect: true
     # 允许降级启动
     allow-degraded-startup: true
 
   # Redis配置（测试环境）
   redis:
-    host: localhost
-    port: 6379
-    password:
-    database: 1
+    host: ${DBGUARDIAN_REDIS_HOST:127.0.0.1}
+    port: ${DBGUARDIAN_REDIS_PORT:6379}
+    password: ${DBGUARDIAN_REDIS_PASSWORD:}
+    database: ${DBGUARDIAN_REDIS_DATABASE:1}
     timeout: 5000ms
     lettuce:
       pool:

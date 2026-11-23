@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: ${SERVER_PORT:8082}
   servlet:
     context-path: /api
 
@@ -26,9 +26,9 @@ spring:
   # PostgreSQL 主从数据源配置
   datasource:
     master:
-      url: jdbc:postgresql://192.168.4.26:5432/appdb
-      username: appuser
-      password: zhuzhou9uu897@
+      url: ${DBGUARDIAN_DB_MASTER_URL:jdbc:postgresql://127.0.0.1:5432/appdb}
+      username: ${DBGUARDIAN_DB_MASTER_USERNAME:}
+      password: ${DBGUARDIAN_DB_MASTER_PASSWORD:}
       driver-class-name: org.postgresql.Driver
       hikari:
         maximum-pool-size: 10
@@ -37,9 +37,9 @@ spring:
         idle-timeout: 600000
         max-lifetime: 1800000
     slave:
-      url: jdbc:postgresql://192.168.4.27:5432/appdb
-      username: appuser
-      password: zhuzhou9uu897@
+      url: ${DBGUARDIAN_DB_SLAVE_URL:jdbc:postgresql://127.0.0.1:5433/appdb}
+      username: ${DBGUARDIAN_DB_SLAVE_USERNAME:}
+      password: ${DBGUARDIAN_DB_SLAVE_PASSWORD:}
       driver-class-name: org.postgresql.Driver
       hikari:
         maximum-pool-size: 10
@@ -50,10 +50,10 @@ spring:
 
     # PostgreSQL 复制观测配置
     replication:
-      master-host: 192.168.4.26
-      master-port: 5432
-      master-user: repl
-      master-password: zhuzhou9uu897@
+      master-host: ${DBGUARDIAN_REPLICATION_HOST:127.0.0.1}
+      master-port: ${DBGUARDIAN_REPLICATION_PORT:5432}
+      master-user: ${DBGUARDIAN_REPLICATION_USER:}
+      master-password: ${DBGUARDIAN_REPLICATION_PASSWORD:}
       auto-reconnect: true
 
     # PostgreSQL 自动追赶与故障恢复配置
@@ -69,34 +69,32 @@ spring:
         config-file: /etc/postgresql/16/main/postgresql.conf
         script-path: /opt/dbguardian/scripts/pg-rewind-recover.sh
         remote-execution-enabled: true
-        remote-executor-command: >
-          ssh ubuntu@192.168.4.26 "sudo -u postgres env {env_sh} bash {script_path_sh}"
-        remote-executor-password: "zhuzhou9uu897@"
+        remote-executor-command: ${DBGUARDIAN_PG_REMOTE_EXECUTOR_COMMAND:}
+        remote-executor-password: ${DBGUARDIAN_PG_REMOTE_EXECUTOR_PASSWORD:}
         pg-ctl-command: /usr/lib/postgresql/16/bin/pg_ctl
         psql-command: /usr/lib/postgresql/16/bin/psql
         pg-rewind-command: /usr/lib/postgresql/16/bin/pg_rewind
-        local-host: 127.0.0.1
-        local-port: 5432
-        local-database: appdb
+        local-host: ${DBGUARDIAN_PG_LOCAL_HOST:127.0.0.1}
+        local-port: ${DBGUARDIAN_PG_LOCAL_PORT:5432}
+        local-database: ${DBGUARDIAN_PG_LOCAL_DATABASE:appdb}
         primary-slot-name: appdb_slot
-        extra-primary-conn-info: "target_session_attrs=read-write"
+        extra-primary-conn-info: ${DBGUARDIAN_PG_EXTRA_PRIMARY_CONN_INFO:}
         startup-wait-seconds: 60
         command-timeout-seconds: 900
         failback-data-directory: /var/lib/postgresql/16/main
         failback-config-file: /etc/postgresql/16/main/postgresql.conf
         failback-script-path: /opt/dbguardian/scripts/pg-rewind-recover.sh
         failback-remote-execution-enabled: true
-        failback-remote-executor-command: >
-          ssh ubuntu@192.168.4.27 "sudo -u postgres env {env_sh} bash {script_path_sh}"
-        failback-remote-executor-password: "zhuzhou9uu897@"
+        failback-remote-executor-command: ${DBGUARDIAN_PG_FAILBACK_REMOTE_EXECUTOR_COMMAND:}
+        failback-remote-executor-password: ${DBGUARDIAN_PG_FAILBACK_REMOTE_EXECUTOR_PASSWORD:}
         failback-pg-ctl-command: /usr/lib/postgresql/16/bin/pg_ctl
         failback-psql-command: /usr/lib/postgresql/16/bin/psql
         failback-pg-rewind-command: /usr/lib/postgresql/16/bin/pg_rewind
-        failback-local-host: 127.0.0.1
-        failback-local-port: 5432
-        failback-local-database: appdb
+        failback-local-host: ${DBGUARDIAN_PG_FAILBACK_LOCAL_HOST:127.0.0.1}
+        failback-local-port: ${DBGUARDIAN_PG_FAILBACK_LOCAL_PORT:5432}
+        failback-local-database: ${DBGUARDIAN_PG_FAILBACK_LOCAL_DATABASE:appdb}
         failback-primary-slot-name: appdb_slot
-        failback-extra-primary-conn-info: "target_session_attrs=read-write"
+        failback-extra-primary-conn-info: ${DBGUARDIAN_PG_FAILBACK_EXTRA_PRIMARY_CONN_INFO:}
         failback-command-timeout-seconds: 900
 
     # 无法连接数据库时允许降级启动
@@ -109,10 +107,10 @@ spring:
   # Spring Boot 3 使用 spring.data.redis 前缀
   data:
     redis:
-      host: 192.168.4.26
-      port: 6379
-      password: zhuzhou9uu897@
-      database: 0
+      host: ${DBGUARDIAN_REDIS_HOST:127.0.0.1}
+      port: ${DBGUARDIAN_REDIS_PORT:6379}
+      password: ${DBGUARDIAN_REDIS_PASSWORD:}
+      database: ${DBGUARDIAN_REDIS_DATABASE:0}
       timeout: 10000ms
       lettuce:
         pool:

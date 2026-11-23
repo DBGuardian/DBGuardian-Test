@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    master:
+      url: jdbc:h2:mem:jpa_master;MODE=MariaDB;DB_CLOSE_DELAY=-1
+      driver-class-name: org.h2.Driver
+      username: sa
+      password: ''
+    slave:
+      url: jdbc:h2:mem:jpa_slave;MODE=MariaDB;DB_CLOSE_DELAY=-1
+      driver-class-name: org.h2.Driver
+      username: sa
+      password: ''
+    runtime:
+      periodic-health-check-enabled: false
+    recovery:
+      enabled: false
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+  redis:
+    host: 127.0.0.1
+    port: 1
+    connect-timeout: 100ms
+    timeout: 100ms

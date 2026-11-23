@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
   servlet:
     context-path: /api
 
@@ -28,9 +28,9 @@ spring:
 
   datasource:
     master:
-      url: jdbc:mysql://192.168.3.150:3306/dbguardian_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-      username: root
-      password: zhuzhou9uu897@
+      url: ${DBGUARDIAN_DB_MASTER_URL:jdbc:mysql://127.0.0.1:3306/dbguardian_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+      username: ${DBGUARDIAN_DB_MASTER_USERNAME:}
+      password: ${DBGUARDIAN_DB_MASTER_PASSWORD:}
       driver-class-name: com.mysql.cj.jdbc.Driver
       hikari:
         maximum-pool-size: 10
@@ -39,9 +39,9 @@ spring:
         idle-timeout: 600000
         max-lifetime: 1800000
     slave:
-      url: jdbc:mysql://192.168.3.151:3306/dbguardian_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-      username: root
-      password: zhuzhou9uu897@
+      url: ${DBGUARDIAN_DB_SLAVE_URL:jdbc:mysql://127.0.0.1:3307/dbguardian_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+      username: ${DBGUARDIAN_DB_SLAVE_USERNAME:}
+      password: ${DBGUARDIAN_DB_SLAVE_PASSWORD:}
       driver-class-name: com.mysql.cj.jdbc.Driver
       hikari:
         maximum-pool-size: 10
@@ -50,19 +50,19 @@ spring:
         idle-timeout: 600000
         max-lifetime: 1800000
     replication:
-      master-host: 192.168.3.150
-      master-port: 3306
-      master-user: repl
-      master-password: zhuzhou9uu897@
+      master-host: ${DBGUARDIAN_REPLICATION_HOST:127.0.0.1}
+      master-port: ${DBGUARDIAN_REPLICATION_PORT:3306}
+      master-user: ${DBGUARDIAN_REPLICATION_USER:}
+      master-password: ${DBGUARDIAN_REPLICATION_PASSWORD:}
       auto-reconnect: true
     allow-degraded-startup: true
 
   data:
     redis:
-      host: 192.168.3.150
-      port: 6379
-      password: zhuzhou9uu897@
-      database: 0
+      host: ${DBGUARDIAN_REDIS_HOST:127.0.0.1}
+      port: ${DBGUARDIAN_REDIS_PORT:6379}
+      password: ${DBGUARDIAN_REDIS_PASSWORD:}
+      database: ${DBGUARDIAN_REDIS_DATABASE:0}
       timeout: 10000ms
       lettuce:
         pool:

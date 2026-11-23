@@ -1,0 +1,48 @@
+server:
+  port: ${SERVER_PORT:8095}
+  servlet:
+    context-path: /api
+
+logging:
+  level:
+    io.dbguardian.spring.failover.DataSourceHealthChecker: DEBUG
+
+spring:
+  application:
+    name: dbguardian-test-java21-sb33-jdbc-mariadb
+  sql:
+    init:
+      mode: never
+  datasource:
+    master:
+      url: ${DBGUARDIAN_MARIADB_MASTER_URL:jdbc:mariadb://127.0.0.1:3306/dbguardian?connectTimeout=3000&socketTimeout=10000}
+      driver-class-name: org.mariadb.jdbc.Driver
+      username: ${DBGUARDIAN_MARIADB_USERNAME:root}
+      password: ${DBGUARDIAN_MARIADB_PASSWORD:}
+    slave:
+      url: ${DBGUARDIAN_MARIADB_SLAVE_URL:jdbc:mariadb://127.0.0.1:3307/dbguardian?connectTimeout=3000&socketTimeout=10000}
+      driver-class-name: org.mariadb.jdbc.Driver
+      username: ${DBGUARDIAN_MARIADB_USERNAME:root}
+      password: ${DBGUARDIAN_MARIADB_PASSWORD:}
+    replication:
+      master-user: ${DBGUARDIAN_MARIADB_REPLICATION_USER:repl}
+      master-password: ${DBGUARDIAN_MARIADB_REPLICATION_PASSWORD:}
+      auto-reconnect: true
+    allow-degraded-startup: true
+    recovery:
+      enabled: true
+      auto-failback: true
+      catchup-timeout-seconds: 300
+      catchup-check-interval-seconds: 2
+    gtid-protection:
+      enabled: true
+      block-slave-reads-on-risk: true
+      max-allowed-lag-seconds: 5
+  data:
+    redis:
+      host: ${DBGUARDIAN_REDIS_HOST:127.0.0.1}
+      port: ${DBGUARDIAN_REDIS_PORT:6379}
+      password: ${DBGUARDIAN_REDIS_PASSWORD:}
+      database: ${DBGUARDIAN_REDIS_DATABASE:0}
+      connect-timeout: 2s
+      timeout: 2s
